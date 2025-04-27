@@ -4,10 +4,9 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QHBoxLayout, QLabel, QLineEdit, QSpinBox, QDoubleSpinBox,
                            QPushButton, QComboBox, QCheckBox, QTextEdit, QSystemTrayIcon,
                            QMenu, QTabWidget, QGroupBox, QFormLayout, QMenuBar)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, QMetaObject, Q_ARG
 from PyQt6.QtGui import QIcon, QAction, QFont
-import threading
-from pinger import Pinger, print_colored
+from pinger import Pinger
 import os
 
 class PingerWorker(QThread):
@@ -532,6 +531,23 @@ class ModernPingerGUI(QMainWindow):
             self.scripts_list.append("- 'examples' subdirectory")
             self.available_scripts = []
 
+    def handle_script_stdout(self):
+        """Handle standard output from the script process"""
+        data = self.script_process.readAllStandardOutput().data().decode()
+        if data:
+            self.update_output(data, "blue")
+
+    def handle_script_stderr(self):
+        """Handle standard error from the script process"""
+        data = self.script_process.readAllStandardError().data().decode()
+        if data:
+            self.update_output(data, "red")
+
+    def handle_script_finished(self, exit_code, _):
+        """Handle script process completion"""
+        status_color = "green" if exit_code == 0 else "red"
+        self.update_output(f"Script completed with exit code: {exit_code}", status_color)
+
     def run_selected_script(self):
         """Run the selected shell script"""
         if not hasattr(self, 'available_scripts') or not self.available_scripts:
@@ -553,53 +569,20 @@ class ModernPingerGUI(QMainWindow):
                 # Make script executable
                 os.chmod(script_path, 0o755)
 
-                # Run the script
-                import subprocess
                 self.update_output(f"Running script: {script_path}", "blue")
 
-                # Create a thread to run the script
-                def run_script():
-                    try:
-                        result = subprocess.run(
-                            f"bash {script_path}",
-                            shell=True,
-                            check=True,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            text=True
-                        )
-                        # Use update_output instead of output_signal
-                        # We need to use a signal-safe method to update from another thread
-                        from PyQt6.QtCore import QMetaObject, Qt, Q_ARG
-                        if result.stdout:
-                            QMetaObject.invokeMethod(self, "update_output",
-                                                   Qt.ConnectionType.QueuedConnection,
-                                                   Q_ARG(str, f"Script output:\n{result.stdout}"),
-                                                   Q_ARG(str, "blue"))
-                        if result.stderr:
-                            QMetaObject.invokeMethod(self, "update_output",
-                                                   Qt.ConnectionType.QueuedConnection,
-                                                   Q_ARG(str, f"Script errors:\n{result.stderr}"),
-                                                   Q_ARG(str, "red"))
-                        QMetaObject.invokeMethod(self, "update_output",
-                                               Qt.ConnectionType.QueuedConnection,
-                                               Q_ARG(str, f"Script completed with return code: {result.returncode}"),
-                                               Q_ARG(str, "green" if result.returncode == 0 else "red"))
-                    except subprocess.CalledProcessError as e:
-                        QMetaObject.invokeMethod(self, "update_output",
-                                               Qt.ConnectionType.QueuedConnection,
-                                               Q_ARG(str, f"Script execution failed: {e.stderr}"),
-                                               Q_ARG(str, "red"))
-                    except Exception as e:
-                        QMetaObject.invokeMethod(self, "update_output",
-                                               Qt.ConnectionType.QueuedConnection,
-                                               Q_ARG(str, f"Error running script: {str(e)}"),
-                                               Q_ARG(str, "red"))
+                # Create a QProcess to run the script
+                from PyQt6.QtCore import QProcess
+                self.script_process = QProcess(self)
 
-                # Start the thread
-                script_thread = threading.Thread(target=run_script)
-                script_thread.daemon = True
-                script_thread.start()
+                # Connect signals for output
+                self.script_process.readyReadStandardOutput.connect(self.handle_script_stdout)
+                self.script_process.readyReadStandardError.connect(self.handle_script_stderr)
+                self.script_process.finished.connect(self.handle_script_finished)
+
+                # Start the process with the appropriate command
+                # For Windows, we'll use the script directly
+                self.script_process.start(script_path, [])
 
             except Exception as e:
                 self.update_output(f"Error running script: {str(e)}", "red")

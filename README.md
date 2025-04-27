@@ -8,7 +8,11 @@ A powerful suite of network monitoring, testing, and optimization tools that com
 
 This repository contains two main tools:
 1. **Enhanced Pinger Tool** - For network monitoring and connection management
+   - Available as both CLI and GUI applications
 2. **SpeedUp Tool** - For network speed optimization and testing
+
+![Enhanced Pinger GUI](pinger_gui_screenshot.png)
+*Screenshot: Enhanced Pinger GUI with system tray integration*
 
 ## Features
 
@@ -27,6 +31,7 @@ This repository contains two main tools:
 - Interactive menu system with colorful output
 - Command-line interface for scripting and automation
 - Detailed statistics and reporting
+- Modern graphical user interface (GUI) with system tray integration
 
 ### ⚙️ Advanced Options
 - Configurable intervals, timeouts, and alert thresholds
@@ -50,10 +55,41 @@ cd enhanced-pinger
 ## Requirements
 
 - Python 3.6 or higher
+- PyQt6 (for the GUI version)
 - Standard Python libraries (all included in the script)
 - Bash shell (for shell script integration)
 
+```bash
+# Install PyQt6 for the GUI version
+pip install PyQt6
+```
+
 ## Usage
+
+### Graphical User Interface (GUI)
+
+The Enhanced Pinger Tool now includes a modern GUI with system tray integration:
+
+```bash
+# Launch the GUI version
+python pinger_gui.py
+```
+
+The GUI provides all the functionality of the command-line version in a user-friendly interface:
+
+- **Multiple tabs** for basic and advanced options
+- **Shell script integration** with the ability to find and run scripts
+- **Real-time ping results** with colored output
+- **System tray integration** allowing the application to run in the background
+- **All ping methods** available in a convenient dropdown menu:
+  1. Standard Ping (TCP/Socket)
+  2. HTTP/HTTPS Ping
+  3. System Ping with Custom Packet Size
+  4. YouTube Speed Test
+  5. Google DNS Speed Test
+  6. Custom Target with Shell Command
+  7. Run Existing Shell Script
+  8. Advanced Options
 
 ### Menu Interface
 
