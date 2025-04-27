@@ -1,0 +1,18 @@
+# List of targets to monitor
+# Format: one target per line (IP address, hostname, or URL)
+
+# Google DNS
+8.8.8.8
+
+# Cloudflare DNS
+1.1.1.1
+
+# Websites
+https://google.com
+https://github.com
+https://example.com
+
+# Add your own targets below
+# myserver.example.com
+# 192.168.1.1
+# https://myapp.example.com/api/health
