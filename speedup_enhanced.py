@@ -1,40 +1,3 @@
-#!/bin/bash
-# Enhanced SpeedUp Tool - Shell wrapper for the Python implementation
-
-# Define colors for output
-RED='\033[31;1m'
-GREEN='\033[32;1m'
-YELLOW='\033[33;1m'
-BLUE='\033[34;1m'
-PURPLE='\033[35;1m'
-CYAN='\033[36;1m'
-WHITE='\033[37;1m'
-RESET='\033[0m'
-
-# Check if Python is installed
-if command -v python3 &> /dev/null; then
-    PYTHON_CMD="python3"
-elif command -v python &> /dev/null; then
-    PYTHON_CMD="python"
-else
-    echo -e "${RED}Error: Python is required but not installed.${RESET}"
-    echo -e "${YELLOW}Please install Python 3 and try again.${RESET}"
-    exit 1
-fi
-
-# Check if the enhanced Python script exists
-if [ ! -f "speedup_enhanced.py" ]; then
-    echo -e "${RED}speedup_enhanced.py not found. Creating it...${RESET}"
-
-    # Check if pinger.py exists
-    if [ ! -f "pinger.py" ]; then
-        echo -e "${RED}Error: pinger.py not found.${RESET}"
-        echo -e "${YELLOW}Please make sure pinger.py is in the same directory as this script.${RESET}"
-        exit 1
-    fi
-
-    # Create the enhanced Python script
-    cat > speedup_enhanced.py << 'EOF'
 #!/usr/bin/env python3
 """
 Enhanced SpeedUp Tool - A network speed optimization and testing tool
@@ -78,7 +41,7 @@ class SpeedUp:
             'white': '\033[37;1m',
             'reset': '\033[0m'
         }
-
+        
         # Define speed test targets
         self.targets = {
             'google_dns': '8.8.8.8',
@@ -87,7 +50,7 @@ class SpeedUp:
             'youtube_1': '74.125.24.91',
             'youtube_2': '172.217.194.113'
         }
-
+        
         # Define packet sizes for different speed levels
         self.packet_sizes = {
             'low': 1000,
@@ -99,7 +62,7 @@ class SpeedUp:
         """Show a loading animation."""
         clear_screen()
         print_colored("Loading...", "green")
-
+        
         for i in range(0, 101, 20):
             clear_screen()
             if i < 50:
@@ -108,21 +71,21 @@ class SpeedUp:
                 print_colored(f"Loading {i}%", "yellow")
             else:
                 print_colored(f"Loading {i}%", "green")
-
+            
             # Adjust sleep time to make loading faster
             time.sleep(0.5)
-
+    
     def show_header(self):
         """Show the tool header."""
         clear_screen()
-
+        
         # Check if figlet is installed
         try:
             subprocess.run(["figlet", "-v"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
             has_figlet = True
         except FileNotFoundError:
             has_figlet = False
-
+        
         if has_figlet:
             subprocess.run(["figlet", "SpeedUp"], check=False)
             subprocess.run(["figlet", "Tool"], check=False)
@@ -130,15 +93,15 @@ class SpeedUp:
             print_colored("==========================", "red")
             print_colored("      SPEEDUP TOOL        ", "green")
             print_colored("==========================", "red")
-
+        
         print_colored("Network Speed Optimization", "cyan")
         print_colored("==========================", "red")
         print()
-
+    
     def show_menu(self):
         """Show the main menu and get user choice."""
         self.show_header()
-
+        
         print_colored("Choose an option:", "green")
         print()
         print_colored("SPEED TESTS", "yellow")
@@ -157,21 +120,21 @@ class SpeedUp:
         print_colored("9. Advanced Pinger Options", "blue")
         print_colored("0. Exit", "red")
         print()
-
+        
         try:
             choice = input("Enter your choice (0-9): ")
             return choice
         except KeyboardInterrupt:
             print("\nExiting...")
             sys.exit(0)
-
+    
     def run_speed_test(self, target: str, packet_size: int, duration: int = 30):
         """Run a speed test using the Pinger class."""
         clear_screen()
         print_colored(f"Running speed test to {target} with packet size {packet_size}...", "green")
         print_colored("Press Ctrl+C to stop the test early", "yellow")
         print()
-
+        
         # Create and run a Pinger instance
         pinger = Pinger(
             target=target,
@@ -179,20 +142,20 @@ class SpeedUp:
             packet_size=packet_size,
             verbose=True
         )
-
+        
         pinger.start(duration=duration)
-
+    
     def run_secret_codes(self):
         """Run the secret codes menu."""
         clear_screen()
-
+        
         # Check if figlet is installed
         try:
             subprocess.run(["figlet", "-v"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
             has_figlet = True
         except FileNotFoundError:
             has_figlet = False
-
+        
         if has_figlet:
             subprocess.run(["figlet", "Secret"], check=False)
             subprocess.run(["figlet", "Codes"], check=False)
@@ -200,50 +163,50 @@ class SpeedUp:
             print_colored("==========================", "red")
             print_colored("     SECRET CODES         ", "red")
             print_colored("==========================", "red")
-
+        
         try:
             code = input("Enter code: ")
-
+            
             if code == "READIP":
                 clear_screen()
                 print_colored("Network Interfaces:", "green")
-
+                
                 # Use ipconfig on Windows, ifconfig on others
                 if platform.system().lower() == "windows":
                     subprocess.run(["ipconfig"], check=False)
                 else:
                     subprocess.run(["ifconfig"], check=False)
-
+                
                 input("\nPress Enter to continue...")
-
+            
             elif code == "1IP":
                 self.run_speed_test(self.targets['cloudflare_dns'], self.packet_sizes['high'])
-
+            
             elif code == "1IP2":
                 self.run_speed_test(self.targets['cloudflare_dns'], self.packet_sizes['low'])
-
+            
             elif code == "SUS":
                 clear_screen()
-
+                
                 if has_figlet:
                     subprocess.run(["figlet", "AMOGUS!"], check=False)
                 else:
                     print_colored("AMOGUS!", "red")
-
+                
                 print_colored("Attention Everyone!", "red")
                 time.sleep(1)
                 print_colored("He is SUS!!!!", "red")
                 time.sleep(2)
-
+                
                 input("\nPress Enter to continue...")
-
+            
             else:
                 print_colored(f"Unknown code: {code}", "red")
                 time.sleep(2)
-
+        
         except KeyboardInterrupt:
             pass
-
+    
     def run_youtube_speed_test(self):
         """Run YouTube speed test menu."""
         clear_screen()
@@ -251,36 +214,36 @@ class SpeedUp:
         print_colored("1. YouTube Server 1 (74.125.24.91)", "white")
         print_colored("2. YouTube Server 2 (172.217.194.113)", "white")
         print_colored("0. Back to main menu", "red")
-
+        
         try:
             choice = input("Select a server (0-2): ")
-
+            
             if choice == "1":
                 self.run_speed_test(self.targets['youtube_1'], self.packet_sizes['high'])
             elif choice == "2":
                 self.run_speed_test(self.targets['youtube_2'], self.packet_sizes['high'])
-
+        
         except KeyboardInterrupt:
             pass
-
+    
     def run_custom_speed_test(self):
         """Run a custom speed test."""
         clear_screen()
         print_colored("Custom Speed Test", "purple")
-
+        
         try:
             target = input("Enter target host or IP: ")
             if not target:
                 return
-
+            
             print_colored("\nSelect packet size:", "cyan")
             print_colored("1. Low (1000 bytes)", "white")
             print_colored("2. Medium (3000 bytes)", "white")
             print_colored("3. High (9000 bytes)", "yellow")
             print_colored("4. Custom size", "red")
-
+            
             size_choice = input("Select packet size (1-4): ")
-
+            
             if size_choice == "1":
                 packet_size = self.packet_sizes['low']
             elif size_choice == "2":
@@ -292,36 +255,36 @@ class SpeedUp:
                 packet_size = int(custom_size) if custom_size else 1000
             else:
                 packet_size = self.packet_sizes['medium']
-
+            
             duration = input("Enter test duration in seconds (default: 30): ")
             duration = int(duration) if duration else 30
-
+            
             self.run_speed_test(target, packet_size, duration)
-
+        
         except (KeyboardInterrupt, ValueError) as e:
             if isinstance(e, ValueError):
                 print_colored(f"Error: {e}", "red")
                 input("Press Enter to continue...")
-
+    
     def show_network_info(self):
         """Show network information."""
         clear_screen()
         print_colored("Network Information", "blue")
-
+        
         # Get IP configuration
         print_colored("\nIP Configuration:", "green")
         if platform.system().lower() == "windows":
             subprocess.run(["ipconfig"], check=False)
         else:
             subprocess.run(["ifconfig"], check=False)
-
+        
         # Get routing table
         print_colored("\nRouting Table:", "green")
         if platform.system().lower() == "windows":
             subprocess.run(["route", "print"], check=False)
         else:
             subprocess.run(["route", "-n"], check=False)
-
+        
         # Get DNS information
         print_colored("\nDNS Information:", "green")
         if platform.system().lower() == "windows":
@@ -333,9 +296,9 @@ class SpeedUp:
                     for line in f:
                         if "nameserver" in line:
                             print(line.strip())
-
+        
         input("\nPress Enter to continue...")
-
+    
     def run_full_speed_suite(self):
         """Run a full suite of speed tests."""
         clear_screen()
@@ -343,11 +306,11 @@ class SpeedUp:
         print_colored("This will run speed tests to multiple targets with different packet sizes.", "cyan")
         print_colored("The tests will take several minutes to complete.", "red")
         print()
-
+        
         confirm = input("Do you want to continue? (y/n): ")
         if confirm.lower() != "y":
             return
-
+        
         # Define test configurations
         tests = [
             {"name": "Google DNS (Low Speed)", "target": self.targets['google_dns'], "size": self.packet_sizes['low'], "duration": 10},
@@ -356,7 +319,7 @@ class SpeedUp:
             {"name": "Cloudflare DNS (Medium Speed)", "target": self.targets['cloudflare_dns'], "size": self.packet_sizes['medium'], "duration": 10},
             {"name": "YouTube (High Speed)", "target": self.targets['youtube_1'], "size": self.packet_sizes['high'], "duration": 10}
         ]
-
+        
         # Run each test
         for i, test in enumerate(tests, 1):
             clear_screen()
@@ -365,68 +328,68 @@ class SpeedUp:
             print_colored(f"Packet Size: {test['size']} bytes", "cyan")
             print_colored(f"Duration: {test['duration']} seconds", "cyan")
             print()
-
+            
             try:
                 self.run_speed_test(test['target'], test['size'], test['duration'])
-
+                
                 if i < len(tests):
                     print_colored("\nNext test starting in 5 seconds...", "yellow")
                     time.sleep(5)
-
+            
             except KeyboardInterrupt:
                 print_colored("\nTest suite interrupted.", "red")
                 input("Press Enter to continue...")
                 return
-
+        
         print_colored("\nAll tests completed!", "green")
         input("Press Enter to continue...")
-
+    
     def run(self):
         """Run the main application loop."""
         # Show loading animation
         self.show_loading_animation()
-
+        
         while True:
             choice = self.show_menu()
-
+            
             if choice == "0":
                 clear_screen()
                 print_colored("Thank you for using the SpeedUp Tool!", "green")
                 print_colored("Goodbye!", "blue")
                 break
-
+            
             elif choice == "1":
                 # Speed Test v1 (Medium)
                 self.run_speed_test(self.targets['google_dns'], self.packet_sizes['medium'])
-
+            
             elif choice == "2":
                 # Speed Test v2 (Maximum)
                 self.run_speed_test(self.targets['google_dns'], self.packet_sizes['high'])
-
+            
             elif choice == "3":
                 # Full Speed Test Suite
                 self.run_full_speed_suite()
-
+            
             elif choice == "4":
                 # Secret Codes
                 self.run_secret_codes()
-
+            
             elif choice == "5":
                 # Browser Speed Test
                 self.run_speed_test(self.targets['google_browser'], self.packet_sizes['high'])
-
+            
             elif choice == "6":
                 # YouTube Speed Test
                 self.run_youtube_speed_test()
-
+            
             elif choice == "7":
                 # Custom Speed Test
                 self.run_custom_speed_test()
-
+            
             elif choice == "8":
                 # Network Information
                 self.show_network_info()
-
+            
             elif choice == "9":
                 # Advanced Pinger Options
                 # Import and use the advanced_options function from pinger.py
@@ -438,7 +401,7 @@ class SpeedUp:
                 except (ImportError, AttributeError):
                     print_colored("Error: Could not access advanced options from pinger.py", "red")
                     input("Press Enter to continue...")
-
+            
             else:
                 print_colored("Invalid choice. Please try again.", "red")
                 time.sleep(1)
@@ -451,36 +414,23 @@ def main():
     parser.add_argument("-t", "--target", help="Specify a target for quick speed test")
     parser.add_argument("-s", "--size", type=int, choices=[1000, 3000, 9000], help="Specify packet size (1000, 3000, or 9000)")
     parser.add_argument("-d", "--duration", type=int, default=30, help="Test duration in seconds (default: 30)")
-
+    
     args = parser.parse_args()
-
+    
     speedup = SpeedUp()
-
+    
     # If target is specified, run a quick test
     if args.target:
         packet_size = args.size if args.size else 3000
         speedup.run_speed_test(args.target, packet_size, args.duration)
         return
-
+    
     # Otherwise, run the full application
     if not args.quick:
         speedup.show_loading_animation()
-
+    
     speedup.run()
 
 
 if __name__ == "__main__":
     main()
-EOF
-
-    # Make the Python script executable
-    chmod +x speedup_enhanced.py
-    echo -e "${GREEN}speedup_enhanced.py created successfully.${RESET}"
-fi
-
-# Make sure the Python scripts are executable
-chmod +x speedup_enhanced.py
-chmod +x pinger.py
-
-# Run the enhanced Python script with any provided arguments
-$PYTHON_CMD speedup_enhanced.py "$@"

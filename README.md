@@ -1,10 +1,14 @@
-# Enhanced Pinger Tool
+# Enhanced Network Tools Suite
 
-A powerful network monitoring and connection management tool that combines Python's networking capabilities with shell script execution.
+A powerful suite of network monitoring, testing, and optimization tools that combine Python's capabilities with shell script execution.
 
-![Enhanced Pinger Tool](https://img.shields.io/badge/Enhanced-Pinger-blue)
+![Enhanced Network Tools](https://img.shields.io/badge/Enhanced-Network_Tools-blue)
 ![Python](https://img.shields.io/badge/Python-3.6+-green)
 ![Shell](https://img.shields.io/badge/Shell-Integration-orange)
+
+This repository contains two main tools:
+1. **Enhanced Pinger Tool** - For network monitoring and connection management
+2. **SpeedUp Tool** - For network speed optimization and testing
 
 ## Features
 
@@ -191,6 +195,84 @@ Execute scripts to restart services when they fail.
 
 ```bash
 python pinger.py your-service.com -X "/path/to/restart_service.sh"
+```
+
+# SpeedUp Tool
+
+The SpeedUp Tool is an enhanced network speed optimization and testing utility that integrates with the Pinger Tool.
+
+## Features
+
+### 🚀 Speed Testing
+- Multiple speed test levels (low, medium, high)
+- Customizable packet sizes
+- Full test suite for comprehensive network analysis
+
+### 🌐 Specialized Tests
+- Browser speed optimization
+- YouTube connection testing
+- Custom target testing
+
+### 🔧 Network Tools
+- Network information display
+- Secret codes for advanced features
+- Integration with the Enhanced Pinger Tool
+
+## Usage
+
+### Running the SpeedUp Tool
+
+```bash
+# Run with the shell wrapper (recommended)
+./speedup.sh
+
+# Run the Python script directly
+python speedup_enhanced.py
+
+# Skip the loading animation
+python speedup_enhanced.py -q
+
+# Run a quick test to a specific target
+python speedup_enhanced.py -t 8.8.8.8 -s 9000 -d 20
+```
+
+### Command Line Options
+
+| Option | Long Option | Description |
+|--------|-------------|-------------|
+| `-q` | `--quick` | Skip the loading animation |
+| `-t` | `--target` | Specify a target for quick speed test |
+| `-s` | `--size` | Specify packet size (1000, 3000, or 9000) |
+| `-d` | `--duration` | Test duration in seconds (default: 30) |
+
+### Menu Interface
+
+The SpeedUp Tool provides an interactive menu:
+
+```
+==========================
+      SPEEDUP TOOL
+==========================
+Network Speed Optimization
+==========================
+
+Choose an option:
+
+SPEED TESTS
+1. Speed Test v1 (Medium Speed)
+2. Speed Test v2 (Maximum Speed)
+3. Full Speed Test Suite
+4. Secret Codes
+
+SPECIALIZED TESTS
+5. Browser Speed Test
+6. YouTube Speed Test
+7. Custom Speed Test
+
+TOOLS
+8. Network Information
+9. Advanced Pinger Options
+0. Exit
 ```
 
 ## Contributing
