@@ -43,7 +43,7 @@ This repository contains two main tools:
 No installation required! Just clone the repository and run the Python script.
 
 ```bash
-git clone https://github.com/yourusername/enhanced-pinger.git
+git clone https://github.com/zinzied/enhanced-pinger.git
 cd enhanced-pinger
 ```
 
